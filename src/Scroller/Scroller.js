@@ -23,8 +23,8 @@ class Scroller extends Component {
     easing: 'cubic-bezier(0.19, 1, 0.22, 1)',
     initialPage: 1,        // 1-based !
     isEnabled: true,
-    onAfterScroll: function () {},
-    onBeforeScroll: function () {},
+    onAfterScroll: function () { },
+    onBeforeScroll: function () { },
     swipeSensitivity: 100, // how much Y movement there should be to be considered a scroll
     transDuration: 0.5,    // seconds
   }
@@ -90,6 +90,11 @@ class Scroller extends Component {
 
     delete window.fpTurnTo
     delete document.fpTurnTo
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.enableTransition();
+    this.turnTo(nextProps.turnTo, true);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -280,10 +285,10 @@ class Scroller extends Component {
     this.isTransitionEnabled = false
   }
 
-  turnTo(num) {
+  turnTo(num, fromProp) {
     if (this.state.curPage === num) return
     this.isScrolling = true
-    this.props.onBeforeScroll(this.state.curPage, num);
+    !fromProp ? this.props.onBeforeScroll(this.state.curPage, num) : null;
     const translateyStr = `translatey(-${window.innerHeight * (num - 1)}px)`;
 
     this.setState({
